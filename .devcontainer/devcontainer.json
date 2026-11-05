@@ -1,0 +1,20 @@
+{
+  "name": "Python Dev Environment",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+
+  // 1. Perintah untuk membuat venv dan menginstal library ke dalamnya
+  "postCreateCommand": "python -m venv .venv && .venv/bin/pip install -r requirements.txt",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/git-lfs:1": {}
+  }, // <-- PERHATIKAN: Koma ditambahkan di sini!
+
+  // 2. Mengatur agar VS Code otomatis memilih .venv tersebut sebagai interpreter
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python"
+      }
+    }
+  }
+}
