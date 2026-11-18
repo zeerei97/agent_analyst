@@ -9,3 +9,5 @@ langchain-chroma
 pypdf
 langchain-text-splitters
 streamlit
+pandas
+matplotlib
