@@ -12,6 +12,7 @@ from src.graph.workflow import (
     review_interpretation_node,
     review_synthesis_node,
     review_visualization_node,
+    save_chart_node,
 )
 from src.graph.state import initial_state
 
@@ -30,6 +31,16 @@ class HumanReviewTests(unittest.TestCase):
         )
         self.assertEqual(result["review_route"], "end")
         self.assertEqual(result["pending_review"], "visualizer")
+
+    def test_missing_chart_preview_is_reported_without_crashing(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            result = save_chart_node(
+                {"chart_preview_path": str(Path(temp_dir) / "missing.png")}
+            )
+
+        self.assertEqual(result["pending_review"], "")
+        self.assertEqual(result["chart_preview_path"], "")
+        self.assertIn("dibuat ulang", result["messages"][0].content)
 
     def test_interpretation_revision_is_saved_as_user_text(self) -> None:
         result = review_interpretation_node(

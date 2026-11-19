@@ -101,7 +101,21 @@ def review_visualization_node(state: AgentState) -> dict:
 
 def save_chart_node(state: AgentState) -> dict:
     preview_path = state.get("chart_preview_path", "")
-    chart_path = approve_chart(preview_path)
+    try:
+        chart_path = approve_chart(preview_path)
+    except FileNotFoundError:
+        return {
+            "pending_review": "",
+            "chart_preview_path": "",
+            "messages": [
+                AIMessage(
+                    content=(
+                        "Pratinjau grafik sudah tidak tersedia, jadi grafik belum disimpan. "
+                        "Silakan minta grafik dibuat ulang."
+                    )
+                )
+            ],
+        }
     return {
         "chart_path": str(chart_path),
         "chart_name": chart_path.name,

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+from pathlib import Path
 
 import streamlit as st
 from langchain_core.messages import AIMessage, HumanMessage
@@ -46,7 +47,14 @@ def _render_chat(state: AgentState) -> None:
                 and state.get("pending_review") == "visualizer"
                 and state.get("chart_preview_path")
             ):
-                st.image(state["chart_preview_path"], use_container_width=True)
+                preview_path = Path(state["chart_preview_path"])
+                if preview_path.is_file():
+                    st.image(str(preview_path), use_container_width=True)
+                else:
+                    st.warning(
+                        "File pratinjau grafik sudah tidak tersedia. "
+                        "Minta grafik dibuat ulang sebelum menyetujuinya."
+                    )
 
 
 def _save_upload(uploaded_file) -> None:
