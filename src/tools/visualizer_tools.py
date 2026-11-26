@@ -42,6 +42,19 @@ def save_dataset_upload(filename: str, content: bytes) -> Path:
     return destination
 
 
+def list_data_files() -> list[Path]:
+    if not DATA_DIR.is_dir():
+        return []
+    return sorted(
+        (
+            path
+            for path in DATA_DIR.iterdir()
+            if path.is_file() and path.suffix.lower() == ".csv"
+        ),
+        key=lambda path: path.name.casefold(),
+    )
+
+
 def load_dataset(file_path: str | Path) -> pd.DataFrame:
     path = Path(file_path).expanduser().resolve()
     data_root = DATA_DIR.resolve()
@@ -60,8 +73,13 @@ def load_dataset(file_path: str | Path) -> pd.DataFrame:
     return frame
 
 
-def get_column_metadata(frame: pd.DataFrame) -> dict[str, str]:
-    return {str(column): str(dtype) for column, dtype in frame.dtypes.items()}
+def get_column_metadata(frame: pd.DataFrame) -> pd.DataFrame:
+    return pd.DataFrame(
+        {
+            "column": [str(column) for column in frame.columns],
+            "dtype": [str(dtype) for dtype in frame.dtypes],
+        }
+    )
 
 
 def _is_numeric(series: pd.Series) -> bool:

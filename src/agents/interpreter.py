@@ -3,6 +3,7 @@ from __future__ import annotations
 import base64
 import re
 from pathlib import Path
+from typing import Any
 
 from langchain_core.messages import AIMessage, HumanMessage
 
@@ -11,6 +12,20 @@ from src.graph.state import AgentState
 from src.tools.interpreter_tools import get_chart_path
 
 _CHART_REFERENCE = re.compile(r"(?<![\w.-])([\w.-]+\.(?:png|jpe?g))\b", re.IGNORECASE)
+
+
+def extract_text(content: Any) -> str:
+    if isinstance(content, str):
+        return content
+    elif isinstance(content, list):
+        text_parts = []
+        for item in content:
+            if isinstance(item, dict) and "text" in item:
+                text_parts.append(item["text"])
+            elif isinstance(item, str):
+                text_parts.append(item)
+        return "".join(text_parts)
+    return str(content)
 
 
 def _chart_path_from_state(state: AgentState) -> Path | None:
@@ -68,7 +83,7 @@ def interpreter_node(state: AgentState) -> dict:
         ]
     )
     response = get_chat_model().invoke([message])
-    interpretation = str(response.content).strip()
+    interpretation = extract_text(response.content).strip()
     return {
         "chart_path": str(chart_path),
         "chart_name": chart_path.name,

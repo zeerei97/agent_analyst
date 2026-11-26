@@ -1,10 +1,26 @@
 from __future__ import annotations
 
+from typing import Any
+
 from langchain_core.messages import AIMessage
 
 from src.agents.model import get_chat_model
 from src.graph.state import AgentState
 from src.tools.synthesizer_tools import read_all_reports
+
+
+def extract_text(content: Any) -> str:
+    if isinstance(content, str):
+        return content
+    elif isinstance(content, list):
+        text_parts = []
+        for item in content:
+            if isinstance(item, dict) and "text" in item:
+                text_parts.append(item["text"])
+            elif isinstance(item, str):
+                text_parts.append(item)
+        return "".join(text_parts)
+    return str(content)
 
 
 def synthesizer_node(state: AgentState) -> dict:
@@ -31,7 +47,7 @@ def synthesizer_node(state: AgentState) -> dict:
             ),
         ]
     )
-    summary = str(response.content).strip()
+    summary = extract_text(response.content).strip()
     return {
         "final_summary": summary,
         "pending_review": "synthesizer",

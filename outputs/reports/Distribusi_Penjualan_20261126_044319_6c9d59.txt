@@ -1,0 +1,21 @@
+Berdasarkan visualisasi data berupa *box plot* dengan judul "Distribusi Penjualan" tersebut, berikut adalah analisis mengenai pola, perbandingan, dan karakteristik datanya:
+
+### 1. Pola Utama (Distribusi Data)
+*   **Pemusatan Data:** Sebagian besar data penjualan terkonsentrasi di nilai yang rendah. Garis oranye di tengah kotak menunjukkan median yang berada di kisaran angka 100.
+*   **Rentang Interkuartil (IQR):** Kotak tersebut menunjukkan bahwa 50% data berada di rentang nilai yang relatif sempit (kira-kira antara 50 hingga 180).
+*   **Kemiringan (*Skewness*):** Distribusi data sangat miring ke kanan (*positively skewed*). Hal ini terlihat dari ekor atas yang sangat panjang dan banyaknya titik data yang berada di luar batas atas.
+
+### 2. Pencilan (*Outliers*)
+*   **Jumlah Pencilan:** Terdapat banyak sekali titik pencilan (*outliers*) yang berada di atas batas atas (*upper whisker*).
+*   **Rentang Pencilan:** Pencilan ini tersebar mulai dari angka sekitar 400 hingga mencapai nilai maksimum di kisaran 1.550. Ini menunjukkan adanya transaksi dengan nilai yang jauh lebih tinggi dibandingkan mayoritas transaksi lainnya.
+
+### 3. Perbandingan
+*   **Batas Atas vs. Pencilan:** Terdapat perbedaan yang sangat kontras antara batas atas normal (yang berada di bawah 400) dengan nilai-nilai pencilan yang mencapai 1.550. Ini mengindikasikan bahwa data penjualan tidak terdistribusi secara merata.
+*   **Batas Bawah:** Batas bawah (*lower whisker*) tampak berada di dekat angka 0, yang menunjukkan bahwa tidak ada nilai penjualan negatif dan data dimulai dari angka yang mendekati nol.
+
+### 4. Caveats (Catatan Penting)
+*   **Kurangnya Detail:** Karena ini adalah *box plot* tunggal, kita tidak bisa mengetahui konteks waktu, kategori produk, atau lokasi geografis dari penjualan tersebut.
+*   **Kepadatan Data:** Meskipun terlihat banyak titik pencilan, visualisasi ini tidak menunjukkan berapa banyak data yang menumpuk di setiap titik tersebut (apakah satu titik mewakili satu transaksi atau lebih).
+*   **Interpretasi Pencilan:** Pencilan yang terlihat sangat banyak ini mungkin merupakan data yang valid (misalnya, pembelian dalam jumlah besar/grosir) atau bisa juga merupakan kesalahan input data. Visualisasi ini tidak memberikan informasi untuk membedakan keduanya.
+
+**Kesimpulan:** Data penjualan ini didominasi oleh transaksi bernilai kecil, namun memiliki variasi yang sangat lebar ke arah nilai yang lebih tinggi, yang ditandai dengan banyaknya transaksi bernilai ekstrem (pencilan).

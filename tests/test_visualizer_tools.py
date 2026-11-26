@@ -37,6 +37,36 @@ class VisualizerToolsTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 visualizer_tools.load_dataset(self.root / "outside.csv")
 
+    def test_list_data_files_returns_sorted_csv_files_only(self) -> None:
+        data_dir = self.root / "data"
+        data_dir.mkdir()
+        (data_dir / "zeta.CSV").write_text("x\n1\n", encoding="utf-8")
+        (data_dir / "Alpha.csv").write_text("x\n1\n", encoding="utf-8")
+        (data_dir / "notes.txt").write_text("not a dataset", encoding="utf-8")
+        (data_dir / "nested").mkdir()
+
+        with patch.object(visualizer_tools, "DATA_DIR", data_dir):
+            self.assertEqual(
+                [path.name for path in visualizer_tools.list_data_files()],
+                ["Alpha.csv", "zeta.CSV"],
+            )
+
+    def test_list_data_files_returns_empty_when_data_directory_is_missing(self) -> None:
+        with patch.object(visualizer_tools, "DATA_DIR", self.root / "missing"):
+            self.assertEqual(visualizer_tools.list_data_files(), [])
+
+    def test_column_metadata_is_a_dataframe_of_column_names_and_types(self) -> None:
+        metadata = visualizer_tools.get_column_metadata(self.frame)
+
+        self.assertIsInstance(metadata, pd.DataFrame)
+        self.assertEqual(
+            metadata.to_dict(orient="records"),
+            [
+                {"column": str(column), "dtype": str(dtype)}
+                for column, dtype in self.frame.dtypes.items()
+            ],
+        )
+
     def test_each_chart_type_creates_preview_and_approval_moves_it(self) -> None:
         pending_dir = self.root / "pending"
         chart_dir = self.root / "charts"
