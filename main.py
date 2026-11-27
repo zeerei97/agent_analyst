@@ -16,6 +16,8 @@ from src.tools.visualizer_tools import (
 )
 
 _UPLOAD_DATASET_OPTION = "Unggah dataset lain..."
+_CHARTS_DIR = Path(__file__).resolve().parent / "outputs" / "charts"
+_FINAL_SUMMARY_PATH = Path(__file__).resolve().parent / "final_analyst.txt"
 
 st.set_page_config(page_title="Data Analyst Agent", page_icon="📊", layout="centered")
 st.markdown(
@@ -101,6 +103,28 @@ def _render_dataset_metadata() -> None:
         st.dataframe(metadata, hide_index=True, use_container_width=True)
 
 
+def _render_chart_sidebar() -> None:
+    st.sidebar.header("Grafik")
+    image_paths = []
+    if _CHARTS_DIR.is_dir():
+        image_paths = sorted(
+            (
+                path
+                for path in _CHARTS_DIR.iterdir()
+                if path.is_file() and path.suffix.lower() in {".png", ".jpg", ".jpeg"}
+            ),
+            key=lambda path: path.name.casefold(),
+        )
+    if not image_paths:
+        st.sidebar.caption("Belum ada gambar grafik.")
+        return
+
+    for image_path in image_paths:
+        st.sidebar.image(
+            str(image_path), caption=image_path.name, use_container_width=True
+        )
+
+
 def _save_upload(uploaded_file) -> bool:
     content = uploaded_file.getvalue()
     fingerprint = f"{uploaded_file.name}:{hashlib.sha256(content).hexdigest()}"
@@ -115,6 +139,7 @@ def _save_upload(uploaded_file) -> bool:
 
 def main() -> None:
     _ensure_session()
+    _render_chart_sidebar()
     st.title("📊 Data Analyst Agent")
     st.caption("Visualisasi, interpretasi grafik, dan rangkuman laporan dengan Gemini.")
 
@@ -183,6 +208,15 @@ def main() -> None:
                 "Sesi berakhir, tetapi belum ada rangkuman yang disetujui. "
                 "Mulai sesi baru dan minta rangkuman sebelum mengetik `done` atau `exit`."
             )
+        if _FINAL_SUMMARY_PATH.is_file():
+            st.download_button(
+                "Unduh final_analyst.txt",
+                data=_FINAL_SUMMARY_PATH.read_bytes(),
+                file_name="final_analyst.txt",
+                mime="text/plain",
+            )
+        else:
+            st.info("File `final_analyst.txt` belum tersedia untuk diunduh.")
         return
 
     prompt = st.chat_input(

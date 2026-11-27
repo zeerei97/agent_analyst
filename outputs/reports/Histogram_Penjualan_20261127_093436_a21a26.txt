@@ -1,0 +1,1 @@
+buatkan grafik bar untuk kolom Country dan Sales
